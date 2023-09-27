@@ -1,0 +1,29 @@
+# Grab inputs for the room size
+room_length = int(input('Enter the length of your room in cm:'))
+room_width = int(input('Enter the width of your room in cm:'))
+room_height = int(input('Enter the height of your room in cm:'))
+
+# declare cone size (might add variable sizing later for small, medium, large cones)
+float cone_length = 36
+float cone_width = 36
+float cone_height = 70
+float cone_stack_gap = 7.6
+
+def calc_room_volume(length, width, height): # Calculates Room Volume
+    return length * width * height
+  
+def calc_stack_volume(length, width, height, stack_gap, room_height): #Calculates the stack heaight of cones if higher than ceiling
+    float stack_height = 0 # Declare for cone stack height
+    int num_cones = 0 # use to calculate number of cones in one stack
+    while stack_height <= room_height: # if the cone stack height is lower than the ceiling
+        num_cones ++ # add one cone to stack
+        if (num_cones == 1): # if it's the first cone, no stack_gap needs to be added
+            stack_height += room_height
+        else:
+            # do other stuff
+        
+    return # sumding sumding
+    
+room_volume = calc_room_volume(room_length, room_width, room_height) # Set room volume as variable
+
+print(f'The volume of your room is {room_volume}') # currently using for testing purposes
