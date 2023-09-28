@@ -54,7 +54,7 @@ cone_stack_attr = calc_stack_attr(cone.height, cone.stack_gap, room_height)  # S
 room_volume = volume(room_length, room_width, room_height)
 
 print(
-    f'The number of cones that can fit in one stack is {cone_stack_attr[0]}. This has a stack height of {round(cone_stack_attr[1], 2)}, with {round(cone_stack_attr[2] - cone_stack_attr[1], 2)}cm remaining until hitting the ceiling.')  # currently using for testing purposescurrently using for testing purposes
+    f'The number of cones that can fit in one stack is {cone_stack_attr[0]}. This has a stack height of {round(cone_stack_attr[1], 2)}cm, with {round(cone_stack_attr[2] - cone_stack_attr[1], 2)}cm remaining until hitting the ceiling.')  # currently using for testing purposescurrently using for testing purposes
 
 result = stacks_in_room(room_volume, calc_volume(cone.length, cone.width, cone_stack_attr[2]))
 print(f'the amount of stacks you can fit in the room is {round(result)}')
