@@ -12,8 +12,8 @@ class Cone:
         self.height = height
         self.stack_gap = stack_gap
 
-    def __print__(self):
-        return f'--- Cone Dimensions --- /nLength: {self.length} /nWidth: {self.width} /nHeight: {self.height}'
+    def __str__(self):
+        return f'--- Cone Dimensions --- \nLength: {self.length}cm \nWidth: {self.width}cm \nHeight: {self.height}cm'
 
 
 def calc_volume(length, width, height):  # Calculates Object Volume
@@ -43,21 +43,22 @@ def stacks_in_room(room_volume, stack_volume):
     return room_volume / stack_volume
 
 
-cone = Cone(36.0, 36.0, 70, 7.6)
+cone = Cone(36.0, 36.0, 70.0, 7.6)
 
 volume = lambda length, width, height: length * width * height  # Lambda function, set volume as variable
 
 print(
-    f'The volume of your room is {volum(room_length, room_width, room_height)}')  # currently using for testing purposes
+    f'The volume of your room is {volume(room_length, room_width, room_height)}cm^3')  # currently using for testing purposes
 
 cone_stack_attr = calc_stack_attr(cone.height, cone.stack_gap, room_height)  # Set stack attributes as variable
+room_volume = volume(room_length, room_width, room_height)
 
 print(
-    f'The number of cones that can fit in one stack is {cone_stack_attr[0]}. This has a stack height of {cone_stack_attr[1]}, with {round(cone_stack_attr[2] - cone_stack_attr[1], 2)}cm remaining until hitting the ceiling.')  # currently using for testing purposescurrently using for testing purposes
+    f'The number of cones that can fit in one stack is {cone_stack_attr[0]}. This has a stack height of {round(cone_stack_attr[1], 2)}, with {round(cone_stack_attr[2] - cone_stack_attr[1], 2)}cm remaining until hitting the ceiling.')  # currently using for testing purposescurrently using for testing purposes
 
-result = stacks_in_room(room_volume, calc_volume(cone_length, cone_width, cone_stack_attr[2]))
+result = stacks_in_room(room_volume, calc_volume(cone.length, cone.width, cone_stack_attr[2]))
 print(f'the amount of stacks you can fit in the room is {round(result)}')
 
 print(f'total number of cones is {cone_stack_attr[0] * round(result)}')
 
-print(cone.print)
+print(cone)
