@@ -1,58 +1,79 @@
 # Grab inputs for the area size
-area_length = int(input('Enter the length of your area in cm:'))
-area_width = int(input('Enter the width of your area in cm:'))
-area_height = int(input('Enter the height of your area in cm:'))
+area_size = float(input("Enter the metres squared of your area you'd like covered:"))
+area_height = float(input('Enter the height of your area in metres:'))
 
 
 class Cone:  # declare cone object with size (for small, medium, large cones)
 
-    def __init__(self, length, width, height, stack_gap): # assign values for the object
-        self.length = length
-        self.width = width
-        self.height = height
-        self.stack_gap = stack_gap
+    def __init__(self, name, length, width, height, stack_gap): # assign values for the object
+        self.name = name # friendly name
+        self.length = length # length of base
+        self.width = width # width of base
+        self.height = height # height of cone
+        self.volume = volume(self.length, self.width, self.height) # volume of cone L x W x H
+        self.stack_gap = stack_gap # when stacked, how much space is between the cones
+        self.stack_height = 0 # the height of stacked cones in space
+        self.stack_amount = 0 # the amount of stacked cones in space
+        self.stack_numofcones = 0 # the number of cones in a stack
+        self.stack_volume = 0 # the stack volume
 
     def __str__(self): # will run when using print(<cone-object>)
-        return f'--- Cone Dimensions --- \nLength: {self.length}cm \nWidth: {self.width}cm \nHeight: {self.height}cm'
-
-
-def calc_stack_attr(height, gap, area_height):  # Calculates the stack heaight of cones if higher than ceiling
-    stack_height = float(0.0)  # Declare for cone stack height
-    num_cones = int(0)  # use to calculate number of cones in one stack
-    while stack_height <= area_height:  # While the cone stack hasn't hit the ceiling yet
-        if num_cones == 0:  # Calculations for the first cone are different
-            if (height + gap) > area_height:
-                return [num_cones, stack_height, area_height]
+        return f'\n--- {self.name} Dimensions --- \nLength: {self.length*100}cm \nWidth: {self.width*100}cm \nHeight: {self.height*100}cm \nVolume: {round(self.volume, 2)}m^3 \n\n--- {self.name} Stack Dimensions --- \nStack Height: {round(self.stack_height, 2)}m \nNumber of Cones per Stack: {self.stack_numofcones} \nNumber of Stacks: {round(self.stack_amount)} \nStack Volume: {round(self.stack_volume, 2)}m^3 \nTotal Number of {self.name}/s: {round(self.stack_numofcones * self.stack_amount)}\n '
+        
+    def stack_formula(self, count): # the formula to calculate stack height of cones
+        return (self.stack_gap * count) + (self.height - self.stack_gap)
+        
+    def stack_add_cone(self, amount): # add a cone to the stack
+        self.stack_numofcones += 1
+        
+    def stacks_in_area(self, area):  # calculates how many stacks can be in the space
+            return (min([(area.size * area.size), (area.size * area.height)]) / (self.length * self.width))//1
+        
+    def create_stack(self, area): # all the steps and variable to create a stack of cones
+        while self.stack_height <= max([area.size, area.height]): # while stack is shorter than the biggest length of the area
+                
+            if max([self.width, self.length, self. height]) > max([area.size, area.height]): # if cone is bigger than area volume
+                print(f'1 {self.name} is too big!')
+                break
+            elif self.stack_formula(self.stack_numofcones + 1) >= max([area.size, area.height]): # else if adding a cone is shorter than the greatest length of the area
+                self.stack_height = self.stack_formula(self.stack_numofcones) # set stack height with formula
+                self.stack_volume = volume(self.length, self.width, self.stack_height) # set stack volume
+                self.stack_amount = self.stacks_in_area(area) # use base of cone to calculate
+                area.remainder = area.calc_remainder(self) #calc remaining area not filled by cone
+                break
             else:
-                stack_height += height  # the first cone creates a stack height of cone_height
-        else:
-            if (stack_height + gap) <= area_height:  # if the next cone is below the ceiling
-                stack_height += gap
-            else:
-                return [num_cones, stack_height, area_height]  # if the next cone will be higher than the ceiling
-        num_cones += 1  # when all else checks out... add a cone
+                self.stack_add_cone(1) # add a cone
+        
 
-    return 'bleh, error'
+class Area:  # declare area object with measurements
 
+    def __init__(self, area_size, area_height): # assign values for the object
+        self.size = area_size # size from input
+        self.height = area_height # size from input
+        self.volume = volume(self.size, self.size, self.height) # using input, calc volume
+        self.remainder = 0
 
-def stacks_in_area(area_volume, stack_volume):  # calculates how many stacks can be in the space
-    return area_volume / stack_volume
+    def __str__(self): # will run when using print(area-object>)
+        return f'--- Area Dimensions ---  \nSize: {self.size}m^2 \nHeight: {self.height}m^2 \nVolume: {self.volume}m^3 \nRemaining Volume: {round(self.remainder, 2)}m^3'
+    
+    def calc_remainder(self, cone): # used to calculate remaining space in area
+        return (cone.volume * cone.stack_amount) / self.volume
 
-
-cone = Cone(36.0, 36.0, 70.0, 7.6) # creating cone object LARGE
 
 volume = lambda length, width, height: length * width * height  # Lambda function, set volume as variable
 
-print(f'The volume of your area is {volume(area_length, area_width, area_height)}cm^3')  # currently using for testing purposes
+# stacks_in_area = lambda cone_base_size, area_size: (area_size / cone_base_size)//1
 
-cone_stack_attr = calc_stack_attr(cone.height, cone.stack_gap, area_height)  # Set stack attributes as variable
-area_volume = volume(area_length, area_width, area_height)
+largecone = Cone("Large Cone (STC900R)", 0.36, 0.36, 0.90, 0.076) # creating cone object LARGE
+mediumcone = Cone("Medium Cone (STC700R)", 0.36, 0.36, 0.70, 0.076) # creating cone object MEDIUM
+smallcone = Cone("Small Cone (STC450R)", 0.25, 0.25, 0.45, 0.046) # creating cone object SMALL
+area = Area(area_size, area_height)
 
-print(f'The number of cones that can fit in one stack is {cone_stack_attr[0]}. This has a stack height of {round(cone_stack_attr[1], 2)}cm, with {round(cone_stack_attr[2] - cone_stack_attr[1], 2)}cm remaining until hitting the ceiling.')  # currently using for testing purposescurrently using for testing purposes
+largecone.create_stack(area) # performs all logic for the cone
+mediumcone.create_stack(area) # performs all logic for the cone
+smallcone.create_stack(area) # performs all logic for the cone
 
-result = stacks_in_area(area_volume, volume(cone.length, cone.width, cone_stack_attr[2]))
-print(f'the amount of stacks you can fit in the area is {round(result)}')
-
-print(f'total number of cones is {cone_stack_attr[0] * round(result)}')
-
-print(cone)
+print(largecone) # print all info of LARGE cone and stack
+print(mediumcone) # print all info of MEDIUM cone and stack
+print(smallcone) # print all info of SMALL cone and stack
+print(area) # print all info of area
