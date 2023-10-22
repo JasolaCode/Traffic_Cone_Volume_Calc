@@ -27,35 +27,37 @@ class Cone:  # declare cone object with size (for small, medium, large cones)
         self.stack_numofcones += 1
         
     def stacks_in_area(self, area):  # calculates how many stacks can be in the space
-        return (min([(area.size * area.size), (area.size * area.height)]) / (self.length * self.width))//1
+        return (min([(area.length * area.width), (area.size * area.height)]) / (self.length * self.width))//1
         
     def create_stack(self, area):  # all the steps and variable to create a stack of cones
-        while self.stack_height <= max([area.size, area.height]):  # while stack is shorter than the biggest length of the area
+        while self.stack_height <= max([area.width, area.length, area.height]):  # while stack is shorter than the biggest length of the area
                 
             if self.volume > area.volume:  # if cone is bigger than area volume
                 print(f'1 {self.name} is too big!')
                 break
-            elif self.stack_formula(self.stack_numofcones + 1) >= max([area.size, area.height]):  # else if adding a cone is shorter than the greatest length of the area
+            elif self.stack_formula(self.stack_numofcones + 1) >= max([area.length, area.width, area.height]):  # else if adding a cone is shorter than the greatest length of the area
                 self.stack_height = self.stack_formula(self.stack_numofcones)  # set stack height with formula
                 self.stack_volume = volume(self.length, self.width, self.stack_height)  # set stack volume
                 self.stack_amount = self.stacks_in_area(area)  # use base of cone to calculate
                 area.remainder = area.calc_remainder(self)  # calc remaining area not filled by cone
                 break
             else:
-                self.stack_add_cone(1) # add a cone
+                self.stack_add_cone(1)  # add a cone
         
 
 class Area:  # declare area object with measurements
 
     def __init__(self, area_size, area_height):  # assign values for the object
         self.size = area_size  # size from input
+        self.width = 7  # width assumed to be 7 metres
+        self.length = round((self.size / self.width), 2)  # length calculated from assumed width using size
         self.height = area_height  # size from input
-        self.volume = volume(self.size, self.size, self.height) # using input, calc volume
+        self.volume = volume(self.length, self.width, self.height)  # using input, calc volume
         self.remainder = 0
 
     def __str__(self):  # will run when using print(area-object>)
-        return f'--- Area Dimensions ---  \nSize: {self.size}m^2 \nHeight: {self.height}m^2 \nVolume: {self.volume}m^3 \nRemaining Volume: {round(self.remainder, 2)}m^3'
-    
+        return f'--- Area Dimensions ---  \nSize: {self.size}m^2 \nLength: {self.length}m^2 \nWidth: {self.width}m^2 \nHeight: {self.height}m^2 \nVolume: {self.volume}m^3 \nRemaining Volume: {round(self.remainder, 2)}m^3'
+
     def calc_remainder(self, cone):  # used to calculate remaining space in area
         return (cone.volume * cone.stack_amount) / self.volume
 
