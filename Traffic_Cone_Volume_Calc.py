@@ -49,12 +49,15 @@ class Area:  # declare area object with measurements
 
     def __init__(self, area_size, area_height):  # assign values for the object
         self.size = area_size  # size from input
+        self.width = 7  # width assumed to be 7 metres
+        self.length = round((self.size / self.width), 2)  # length calculated from assumed width using size
         self.height = area_height  # size from input
-        self.volume = volume(self.size, self.size, self.height) # using input, calc volume
+        self.volume = volume(self.length, self.width, self.height)  # using input, calc volume
         self.remainder = 0
 
     def __str__(self):  # will run when using print(area-object>)
-        return f'--- Area Dimensions ---  \nSize: {self.size}m^2 \nHeight: {self.height}m^2 \nVolume: {self.volume}m^3 \nRemaining Volume: {round(self.remainder, 2)}m^3'
+        return f'--- Area Dimensions ---  \nSize: {self.size}m^2 \nLength: {self.length}m^2 \nWidth: {self.width}m^2 \nHeight: {self.height}m^2 \nVolume: {self.volume}m^3 \nRemaining Volume: {round(self.remainder, 2)}m^3'
+
     
     def calc_remainder(self, cone):  # used to calculate remaining space in area
         return (cone.volume * cone.stack_amount) / self.volume
